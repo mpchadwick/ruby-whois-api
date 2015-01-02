@@ -20,7 +20,13 @@ get '/:domain_name' do
 
 	# Lookup the domain
 	c = Whois::Client.new
-	r = c.lookup(params[:domain_name]);
-	r.properties.to_json
+	begin
+		r = c.lookup(params[:domain_name]);
+		response = {"status" => 200, "data" => r.properties}.to_json
+		response
+	rescue Exception => e
+		response = {"status" => 400, "error" => e.message}.to_json
+		response
+	end
 
 end
