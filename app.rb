@@ -22,11 +22,23 @@ get '/:domain_name' do
 	c = Whois::Client.new
 	begin
 		r = c.lookup(params[:domain_name]);
-		response = {"status" => 200, "data" => r.properties}.to_json
-		response
+		d = r.properties
+		d[:registrar] = d[:registrar].to_h
+		if d[:registrant_contacts].is_a? Array
+			d[:registrant_contacts][0] = d[:registrant_contacts][0].to_h
+		end
+		if d[:admin_contacts].is_a? Array
+			d[:admin_contacts][0] = d[:admin_contacts][0].to_h
+		end
+		if d[:technical_contacts].is_a? Array
+			d[:technical_contacts][0] = d[:technical_contacts][0].to_h
+		end
+		response = {"status" => 200, "data" => d}
 	rescue Exception => e
-		response = {"status" => 400, "error" => e.message}.to_json
-		response
+		response = {"status" => 400, "error" => e.message}
 	end
+
+	# Respond
+	JSON.pretty_generate(response)
 
 end
