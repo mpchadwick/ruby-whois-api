@@ -4,7 +4,7 @@ require 'json'
 
 get '/:domain_name' do 
 
-	api_key_file = "../api-keys.txt";
+	api_key_file = "api-keys.txt";
 
 	# Authenticate request
 	valid_request = false
